@@ -2,15 +2,15 @@
 
 ## 🎯 Objectif du Challenge
 
-Votre mission est de développer une fonction de **découpage de PDF** (PDF splitter) qui analyse un registre des procès-verbaux (minute book) et identifie automatiquement les différentes sections du document.
+Votre mission est de développer une fonction de **découpage de PDF** (PDF splitter) qui analyse un livre des minutes (minute book) et identifie automatiquement les différentes sections du document.
 
 ### Le Défi
 
-Vous recevrez un PDF contenant un registre des procès-verbaux avec plusieurs sections. Votre objectif est de retourner, pour chaque section, la **page de début** et la **page de fin**.
+Vous recevrez un PDF contenant un livre des minutes avec plusieurs sections. Votre objectif est de retourner, pour chaque section, la **page de début** et la **page de fin**.
 
-**📖 Qu'est-ce qu'un Registre des Procès-verbaux (Minute Book) ?**
+**📖 Qu'est-ce qu'un livre des minutes (Minute Book) ?**
 
-Un **registre des procès-verbaux** (Minute Book) est un document juridique essentiel qui contient l'ensemble des documents corporatifs et des décisions importantes d'une entreprise. Il sert de registre officiel et historique de toutes les activités de gouvernance de la société. Ces registres sont cruciaux pour la conformité légale, la gouvernance d'entreprise, la traçabilité, les transactions financières et les audits. Traditionnellement maintenus sous forme papier, ils sont de plus en plus numérisés en PDF, d'où le besoin d'automatiser leur traitement et leur organisation. 
+Un **livre des minutes** (Minute Book) est un document juridique essentiel qui contient l'ensemble des documents corporatifs et des décisions importantes d'une entreprise. Il sert de registre officiel et historique de toutes les activités de gouvernance de la société. Ces registres sont cruciaux pour la conformité légale, la gouvernance d'entreprise, la traçabilité, les transactions financières et les audits. Traditionnellement maintenus sous forme papier, ils sont de plus en plus numérisés en PDF, d'où le besoin d'automatiser leur traitement et leur organisation. 
 
 **Contraintes importantes :**
 - Les sections ont des longueurs variables
@@ -89,7 +89,8 @@ Content-Type: application/json
 ```json
 {
   "pdfPage": "base64_encoded_image_string",
-  "prompt": "Votre prompt ici"
+  "prompt": "Votre prompt ici",
+  "model": "gemini-2.5-flash" || "gpt-4o"
 }
 ```
 
@@ -200,7 +201,7 @@ if __name__ == "__main__":
 
 ### 1. Minimiser le Nombre de Requêtes
 
-- **Échantillonnage intelligent** : Ne traitez pas toutes les pages. Utilisez une stratégie d'échantillonnage (par exemple, toutes les 2-3 pages) pour identifier les sections
+- **Échantillonnage intelligent** : Ne traitez pas toutes les pages. Utilisez une stratégie d'échantillonnage (par exemple, toutes les 10-12 pages) pour identifier les sections
 - **Détection de motifs** : Si vous identifiez un pattern dans les sections (par exemple, les titres de sections ont un format spécifique), vous pouvez inférer les limites sans traiter toutes les pages
 - **Recherche binaire** : Utilisez une approche de recherche binaire pour trouver rapidement les limites des sections
 
@@ -315,6 +316,6 @@ N'oubliez pas : le score est calculé comme **Temps × Requêtes × Erreurs**. T
 
 Les membres de l'équipe gagnante se mériteront une entrevue afin d'obtenir un stage d'été chez AutoComply.
 
-Si vous avez des questions pendant le concours, n'hésitez pas à demander aux organisateurs.
+Si vous avez des questions pendant le concours, n'hésitez pas à demander aux organisateurs d'entrer en contact avec nous.
 
 
