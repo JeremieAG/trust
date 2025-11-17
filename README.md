@@ -197,6 +197,18 @@ if __name__ == "__main__":
     print(f"Résultat: {result}")
 ```
 
+**📁 Fichiers d'Exemple Disponibles :**
+
+Ce dépôt contient des fichiers d'exemple pour vous aider à démarrer :
+- `Exemple.py` : Un exemple de code Python montrant comment utiliser l'API
+- `Exemple_Registre_Actionnaires.pdf` : Un PDF d'exemple contenant une page de registre d'actionnaires que vous pouvez utiliser pour tester votre solution
+
+```
+  cd Exemples
+  pip install Exemples/requirements.txt
+  python Exemple.py Exemple_Registre_Actionnaires.pdf "What type of document is this?" 
+```
+
 ---
 
 ## 🎓 Stratégies Recommandées
