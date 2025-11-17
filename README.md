@@ -110,6 +110,40 @@ Content-Type: application/json
   "message": "Valid API key required in Authorization header (Bearer <api-key>)"
 }
 ```
+### Endpoint : POST `/ask`
+
+Cet endpoint permet de traiter une page de PDF en l'envoyant à un modèle d'IA visionnaire.
+
+**URL complète :** `https://ai-models.autocomply.ca/ask`
+
+**En-têtes requis :**
+```
+Authorization: Bearer sk-ac-7f8e9d2c4b1a6e5f3d8c7b9a2e4f6d1c
+Content-Type: application/json
+```
+
+**Corps de la requête :**
+```json
+{
+  "query": "Votre prompt ici",
+  "model": "gemini-2.5-flash" || "gpt-4o" || "claude-sonnet-4.5"
+}
+```
+
+**Réponse en cas de succès (200) :**
+```json
+{
+  "result": "Réponse textuelle du modèle IA"
+}
+```
+
+**Réponse en cas d'erreur (401) :**
+```json
+{
+  "error": "Unauthorized",
+  "message": "Valid API key required in Authorization header (Bearer <api-key>)"
+}
+```
 
 ### Endpoint : GET `/health`
 
@@ -298,7 +332,7 @@ Votre fonction doit retourner une liste de sections avec leurs pages de début e
 
 **⚠️ IMPORTANT - Soumission de votre Solution :**
 
-Pour participer au challenge, vous devez soumettre votre solution en créant une **pull request** vers ce dépôt **avant la fin du concours**.
+Pour participer au challenge, vous devez soumettre votre solution en créant une **pull request** vers ce dépôt **avant le jeudi 20 nov à midi**.
 
 **Instructions de soumission :**
 
