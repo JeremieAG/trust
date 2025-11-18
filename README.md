@@ -44,7 +44,7 @@ Votre solution doit être capable de détecter ces sections même si elles appar
 Votre score final sera calculé selon la formule suivante :
 
 ```
-Score = Temps d'exécution (secondes) × Nombre de requêtes API × Nombre d'erreurs
+Score = Temps d'exécution (secondes) + Nombre de requêtes API + Nombre de pages érronées^2
 ```
 
 **L'équipe avec le score le plus bas gagne !** 🏆
@@ -360,7 +360,7 @@ Les soumissions qui ne respectent pas ces instructions ne seront pas évaluées.
 
 ## 🚀 Bonne Chance !
 
-N'oubliez pas : le score est calculé comme **Temps × Requêtes × Erreurs**. Trouvez le bon équilibre entre précision et efficacité !
+N'oubliez pas : le score est calculé comme **Temps + Requêtes + Erreurs^2**. Trouvez le bon équilibre entre précision et efficacité !
 
 Les membres de l'équipe gagnante se mériteront une entrevue afin d'obtenir un stage d'été chez AutoComply.
 
