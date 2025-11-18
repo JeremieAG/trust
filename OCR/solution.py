@@ -9,6 +9,7 @@ import unicodedata
 from API import APIClient, MODELS
 from PDFProcessor import PDFProcessor
 from PromptGenerator import PromptGenerator
+from TextHandler import create_batch, clean_lines
 
 CATEGORY_MAP = {
     "1": "Articles & Amendments / Statuts et Amendements",
@@ -35,6 +36,7 @@ def parse_args() -> argparse.Namespace:
         description="Process PDF files with AutoComply APIClient"
     )
     parser.add_argument("pdf_file", help="Path to the PDF file to process")
+
     parser.add_argument(
         "--api-url",
         default="https://ai-models.autocomply.ca",
@@ -45,7 +47,9 @@ def parse_args() -> argparse.Namespace:
         default="sk-ac-7f8e9d2c4b1a6e5f3d8c7b9a2e4f6d1c",
         help="APIClient key for authentication",
     )
-    parser.add_argument("--output", "-o", help="Output file to save results")
+    parser.add_argument(
+        "--output", "-o", default="result.json", help="Output file to save results"
+    )
     parser.add_argument(
         "--dpi",
         type=int,
@@ -58,65 +62,14 @@ def parse_args() -> argparse.Namespace:
         default="gemini-2.5-flash",
         help="AI model to use (default: gemini-2.5-flash)",
     )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=100,
+        help="The size of the individual batch sent to the API",
+    )
 
     return parser.parse_args()
-
-
-def create_batch(
-    texts: list[str],
-    first_n_lines: int = 3,
-    last_n_lines: int = 2,
-    batch_size: int = 50,
-    overlap: int = 2,
-    custom_start: int = 0,
-    custom_end: int = None,
-) -> list[str]:
-    """
-    Create smaller batches from a list of texts pages, preserving the first n and last n lines of each page.
-    While ensuring some overlap between batches for better context.
-
-    Args:
-        texts (list[str]): List of text pages
-        first_n_lines (int, optional): Number of lines to keep from the start of each page. Defaults to 3.
-        last_n_lines (int, optional): Number of lines to keep from the end of each page. Defaults to 2.
-        batch_size (int, optional): Number of pages per batch. Defaults to 50.
-        overlap (int, optional): Number of overlapping pages between batches. Defaults to 2.
-        custom_start (int, optional): Custom start page index. Defaults to 0.
-        custom_end (int, optional): Custom end page index. Defaults to None.
-
-    Returns:
-        list[str]: List of text batches
-    """
-    batch_start = custom_start
-    batches = []
-
-    while batch_start < (len(texts) if custom_end is None else custom_end):
-        batch_end = min(batch_start + batch_size, len(texts))
-
-        batch_text = ""
-        for i in range(batch_start, batch_end):
-            text = texts[i]
-            if text is None:
-                continue
-            lines = [line for line in text.splitlines() if line.strip() != ""]
-            first_lines = "\n".join(lines[:first_n_lines])
-            last_lines = (
-                "\n".join(lines[-last_n_lines:]) if len(lines) >= last_n_lines else ""
-            )
-
-            if last_lines and last_lines != first_lines:
-                batch_text += f"Page {i+1}:\n{first_lines}\n...\n{last_lines}\n\n"
-            else:
-                batch_text += f"Page {i+1}:\n{first_lines}\n\n"
-
-        if not batch_text.strip():
-            batch_start += batch_size - overlap
-            continue
-
-        batches.append(batch_text.strip())
-        batch_start += batch_size - overlap
-
-    return batches
 
 
 def run_batch_api(
@@ -400,7 +353,7 @@ def handle_discontinuity(
     category_map: list[dict[str, str]],
     texts: list[str],
     max_iterations: int = 3,
-) -> list[dict[str, str]]:
+) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
     """
     Handle the discontinuity by reprocessing the affected pages.
 
@@ -413,7 +366,7 @@ def handle_discontinuity(
         max_iterations (int, optional): Maximum number of reprocessing iterations. Defaults to 3.
 
     Returns:
-        list[dict[str, str]]: Updated list of category dictionaries
+        tuple[list[dict[str, str]], list[dict[str, str]]]: Updated category map and list of remaining discontinuities
     """
     page_classifications = {}
     for section in category_map:
@@ -474,7 +427,9 @@ def handle_discontinuity(
                 text = texts[page_idx]
                 if text is None:
                     continue
-                lines = [line for line in text.splitlines() if line.strip() != ""]
+                lines = clean_lines(
+                    [line for line in text.splitlines() if line.strip() != ""]
+                )
                 first_three_lines = "\n".join(lines[:3])
                 last_two_lines = "\n".join(lines[-2:]) if len(lines) > 3 else ""
 
@@ -526,12 +481,7 @@ def handle_discontinuity(
 
         category_map = clean_category_map(category_map)
 
-    if discontinuity:
-        print(
-            f"\nWarning: Still have {len(discontinuity)} discontinuities after {max_iterations} iterations"
-        )
-
-    return category_map
+    return category_map, discontinuity
 
 
 def quick_category_title_match(
@@ -586,8 +536,6 @@ def quick_category_title_match(
         if category_num in missing_categories:
             missing_categories.remove(category_num)
 
-    print(f"Quick match: Missing categories before scan: {missing_categories}")
-
     for page_idx, text in enumerate(texts):
         if text is None:
             continue
@@ -629,9 +577,6 @@ def quick_category_title_match(
         confidence = round(85.0 + (highest_ratio * 15.0), 2)
 
         if matched_category not in missing_categories:
-            print(
-                f"Quick match: Page {page_idx + 1} matched category {matched_category} but it's not in missing categories (ratio: {highest_ratio:.3f}, text: '{matched_line_text}')"
-            )
             continue
 
         in_section = False
@@ -646,9 +591,6 @@ def quick_category_title_match(
 
         if in_section:
             if highest_ratio >= 0.9:
-                print(
-                    f"Quick match: Page {page_idx + 1} has strong title match (ratio: {highest_ratio:.3f}) - splitting section '{current_section['name']}' at page {page_idx + 1}"
-                )
 
                 if current_section["startPage"] < page_idx + 1:
                     current_section["endPage"] = page_idx
@@ -671,10 +613,6 @@ def quick_category_title_match(
                     }
                 )
                 missing_categories.remove(matched_category)
-            else:
-                print(
-                    f"Quick match: Page {page_idx + 1} matched category {matched_category} but it's already in section '{current_section['name']}' (pages {current_section['startPage']}-{current_section['endPage']}) and match ratio {highest_ratio:.3f} is not strong enough to override (text: '{matched_line_text}')"
-                )
             continue
 
         print(
@@ -719,15 +657,19 @@ def write_output(category_map: list[dict[str, str]], output_file: str):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
-def main():
-    args = parse_args()
+def process(texts: list[str], api: APIClient, args: argparse.Namespace, hasRetried: bool = False) -> list[dict[str, str]]:
+    """
+    Process the texts through the AI model to generate the category map.
 
-    print("Starting PDF processing...")
-    start_time = time()
+    Args:
+        texts (list[str]): List of text pages
+        api (APIClient): APIClient instance
+        args (argparse.Namespace): Parsed command line arguments
+        hasRetried (bool): Flag indicating if the process has been retried
 
-    procesor = PDFProcessor(dpi=args.dpi)
-    texts = procesor.ocr_pdf(args.pdf_file)
-
+    Returns:
+        list[dict[str, str]]: List of category dictionaries
+    """
     print("Generating prompts...")
 
     prompt_gen = PromptGenerator(CATEGORY_MAP)
@@ -736,9 +678,8 @@ def main():
     print("Running main prompt through API...")
 
     batchs = create_batch(
-        texts, batch_size=50, overlap=2, first_n_lines=3, last_n_lines=2
+        texts, batch_size=args.batch_size, overlap=2, first_n_lines=3, last_n_lines=2
     )
-    api = APIClient(api_url=args.api_url, api_key=args.api_key)
     model = MODELS.find_by_name(args.model.upper().replace("-", "_").replace(".", "_"))
     if model is None:
         print(f"Invalid model name: {args.model}")
@@ -753,10 +694,35 @@ def main():
 
     print("Handling discontinuities...")
 
-    category_map = handle_discontinuity(api, model, prompt_gen, category_map, texts)
+    category_map, discontinuity = handle_discontinuity(
+        api, model, prompt_gen, category_map, texts
+    )
+
+    if discontinuity and not hasRetried:
+        print(
+            f"There are still {len(discontinuity)} discontinuities after reprocessing."
+        )
+        print("Restarting the whole process to fix remaining discontinuities...")
+        return process(texts, api, args, hasRetried=True)
 
     print("Applying quick category title matching...")
     category_map = quick_category_title_match(category_map, texts)
+
+    return category_map
+
+
+def main():
+    args = parse_args()
+
+    print("Starting PDF processing...")
+    start_time = time()
+
+    procesor = PDFProcessor(dpi=args.dpi)
+    texts = procesor.ocr_pdf(args.pdf_file)
+
+    print("Processing texts through AI model...")
+    api = APIClient(api_url=args.api_url, api_key=args.api_key)
+    category_map = process(texts, api, args)
 
     print("Finalizing category map...")
 

@@ -1,18 +1,28 @@
 # Solution de l’équipe OCR
-Résultats sans erreur avec `8` appels a l'API (incluant les tentatives infructueuses) et un temps de traitement de `134.75` secondes sur un MacBook Pro M1.
-Les résultats sont générés dans le fichier `results.json`.
+Résultats sans erreur avec `3` appels a l'API (incluant les tentatives infructueuses) et un temps de traitement de `62.06` secondes sur un MacBook Pro M1.
+Les résultats sont générés dans le fichier `result.json`.
 Commande pour lancer le script :
 ```bash
-python solution.py DEMO_MinuteBook_FR.pdf -o results.json  
+python solution.py DEMO_MinuteBook_FR.pdf -o result.json  
 ```
 Il faut installer les dépendances listées dans le fichier `requirements.txt` avant d'exécuter le script.
 (Python 3.8+ < 3.14 est requis)
+
+## Paramètres
+- `pdf_file`: Chemin vers le fichier PDF à traiter
+- `-o, --output`: Chemin vers le fichier de sortie JSON (par défaut `results.json`)
+- `--api-url`: URL de l'API (par défaut `https://ai-models.autocomply.ca`)
+- `--api-key`: Clé API pour l'authentification (par défaut `sk-ac-7f8e9d2c4b1a6e5f3d8c7b9a2e4f6d1c`)
+- `--dpi`: Résolution en DPI pour le rendu des pages PDF (par défaut `150`)
+- `--model`: Modèle LLM à utiliser (par défaut `gemini-2.5-flash`)
+- `--batch-size`: Nombre de pages à envoyer par requête à l'API (par défaut `100`)
+- `-h, --help`: Affiche l'aide pour les paramètres
 
 ## Approche du problème
 Initalement, nous n'avions pas accès a la route `/ask` de l’API, nous étions donc contraints d’utiliser la route `/process-pdf` pour demander au LLM de classifier les pages du PDF.
 Nous voulions à tout prix minimiser le nombre d’appels à un API, puisque celui-ci peut engendrer des coûts rapidement élevés à l’utilisation.
 Nous avons donc décidé d’utiliser `pytesseract` une librairie OCR open source fait par google pour extraire le texte des pages du PDF localement.
-Ensuite, après une analyse rapide des pages, on en est venue à la conclusion que les détails clefs pour classifier les pages étaient situés dans les premières et dernières lignes de chaque page.
+Ensuite, après une analyse rapide des pages, on en est venue à la conclusion que les détails clefs pour classifier les pages étaient situés dans les premières et dernières lignes de chaque page. Pour la selection des lignes, on applique un filtre pour ignorer les lignes vide, ou contenant que des caractères spéciaux (-, _, *, etc..), puisqu'il indique souvent juste une erreur de rendu OCR. Ensuite on regroupe les lignes ayant peut de mots (moins de 2 mots) en une seule ligne pour donner un peu plus de contexte au LLM sans trop augmenter la taille du prompt.
 
 Initialement, avec la limitation de la route `/process-pdf`, nous avions mis en place une fonction pour transformer le texte des x premières pages en une image et de l’envoyer au LLM avec un prompt demandant de classifier les pages. Cette méthode, bien que fonctionnelle, était loin d’être optimale, car on convertissait des images en texte pour ensuite les retransformer en images.
 
@@ -44,3 +54,5 @@ Finalement, on génère le fichier `results.json` avec le format demandé.
 - Améliorer la requête pour obtenir des résultats plus précis du LLM
 - Optimiser la taille des paquets de pages envoyées au LLM pour minimiser le nombre d’appels API tout en maximisant la précision
 - Crée plus de règles heuristiques pour détecter et corriger les erreurs de classification
+- Utiliser plusieurs travailleurs pour la gestions des discontinuités
+- Trouver un moyen d'éviter
