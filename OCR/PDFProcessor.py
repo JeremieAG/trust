@@ -2,12 +2,16 @@ import concurrent.futures
 import io
 import os
 import re
+from sys import platform
 from typing import List
 
 import fitz
 from PIL import Image
 import pytesseract
 
+if platform.startswith("win"):
+    print("Setting tesseract cmd for Windows")
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 class PDFProcessor:
 

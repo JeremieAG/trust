@@ -6,6 +6,25 @@ Commande pour lancer le script :
 python solution.py DEMO_MinuteBook_FR.pdf -o result.json  
 ```
 Il faut installer les dépendances listées dans le fichier `requirements.txt` avant d'exécuter le script.
+Vous devez également avoir Tesseract OCR installé sur votre machine. Vous pouvez le télécharger comme suit :
+#### Sur macOS (via Homebrew) :
+```bash
+brew install tesseract
+```
+#### Sur Ubuntu/Debian :
+```bash
+sudo apt-get install tesseract-ocr
+```
+#### Sur Windows :
+Téléchargez l'installateur depuis [ce lien](https://github.com/UB-Mannheim/tesseract/wiki) et suivez les instructions d'installation.
+Ou via winget :
+```bash
+winget install --id=UB-Mannheim.TesseractOCR  -e
+```
+Assurez-vous que le chemin vers l'exécutable Tesseract est ajouté à votre variable d'environnement PATH ou spécifiez-le dans `PDFProcessor.py` si nécessaire. (Le chemin par défaut est déjà configuré pour Windows dans le code.)
+
+Source [tesseract OCR](https://tesseract-ocr.github.io/tessdoc/Installation.html), [pytesseract](https://pypi.org/project/pytesseract/)
+
 (Python 3.8+ < 3.14 est requis)
 
 ## Paramètres
@@ -56,3 +75,27 @@ Finalement, on génère le fichier `results.json` avec le format demandé.
 - Crée plus de règles heuristiques pour détecter et corriger les erreurs de classification
 - Utiliser plusieurs travailleurs pour la gestions des discontinuités
 - Trouver un moyen d'éviter
+
+## Analyse de la performance
+Nous avons aussi créé un script `accuracyCalculator.py` pour évaluer la réproductibilité de notre solution. Celui-ci compare les résultats générés par notre script avec les résultats attendus et calcule le nombre d'erreurs, le temps d'exécution, et le nombre d'appels API effectués pour un nombre d'exécutions donné.
+Le script peut être exécuté avec la commande suivante :
+```bash
+python accuracyCalculator.py {path_to_pdf} --expected_results {path_to_ground_truth_json} --runs {number_of_runs}
+```
+
+### Resultats de l'analyse
+Après avoir exécuté le script `accuracyCalculator.py` sur 50 exécutions, nous avons obtenu les résultats suivants :
+```
+    "Average errors": 4.38,
+    "Max error": 29,
+    "perfect count": 36,
+    
+    "Avg requests": 7.6,
+    "Min requests": 3,
+    "Max requests": 20,
+
+    "Avg time": 158.837,
+    "Min time": 58.69,
+    "Max time": 411.1,
+```
+On peut en conclure que notre solution est assez robuste (72% d'exécutions parfaites) et efficace en termes de nombre d'appels API (en moyenne 7.6 appels par exécution). Cependant, il y a encore de la marge pour améliorer la précision et réduire le nombre d'erreurs dans les classifications. Malgré tout, la performance reste plus que satisfaisante sachant que nous avons juste accès a 1 exemple de PDF pour entraîner et tester notre solution.

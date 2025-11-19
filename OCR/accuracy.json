@@ -1,0 +1,314 @@
+{
+    "Average errors": 4.38,
+    "Min error": 0,
+    "Max error": 29,
+    "perfect count": 36,
+    "Avg requests": 7.6,
+    "Min requests": 3,
+    "Max requests": 20,
+    "Avg time": 158.837,
+    "Min time": 58.69,
+    "Max time": 411.1,
+    "runs": [
+        {
+            "run": 1,
+            "errors": 0,
+            "requests": 3,
+            "time": 77.58
+        },
+        {
+            "run": 2,
+            "errors": 28,
+            "requests": 6,
+            "time": 102.12
+        },
+        {
+            "run": 3,
+            "errors": 0,
+            "requests": 12,
+            "time": 204.32
+        },
+        {
+            "run": 4,
+            "errors": 13,
+            "requests": 17,
+            "time": 411.1
+        },
+        {
+            "run": 5,
+            "errors": 0,
+            "requests": 11,
+            "time": 238.03
+        },
+        {
+            "run": 6,
+            "errors": 0,
+            "requests": 3,
+            "time": 78.35
+        },
+        {
+            "run": 7,
+            "errors": 0,
+            "requests": 3,
+            "time": 85.74
+        },
+        {
+            "run": 8,
+            "errors": 0,
+            "requests": 12,
+            "time": 218.06
+        },
+        {
+            "run": 9,
+            "errors": 13,
+            "requests": 17,
+            "time": 338.13
+        },
+        {
+            "run": 10,
+            "errors": 22,
+            "requests": 6,
+            "time": 107.68
+        },
+        {
+            "run": 11,
+            "errors": 12,
+            "requests": 16,
+            "time": 395.4
+        },
+        {
+            "run": 12,
+            "errors": 0,
+            "requests": 3,
+            "time": 76.13
+        },
+        {
+            "run": 13,
+            "errors": 0,
+            "requests": 3,
+            "time": 70.14
+        },
+        {
+            "run": 14,
+            "errors": 0,
+            "requests": 12,
+            "time": 231.84
+        },
+        {
+            "run": 15,
+            "errors": 0,
+            "requests": 12,
+            "time": 219.52
+        },
+        {
+            "run": 16,
+            "errors": 0,
+            "requests": 3,
+            "time": 59.87
+        },
+        {
+            "run": 17,
+            "errors": 13,
+            "requests": 18,
+            "time": 296.01
+        },
+        {
+            "run": 18,
+            "errors": 0,
+            "requests": 3,
+            "time": 63.13
+        },
+        {
+            "run": 19,
+            "errors": 0,
+            "requests": 3,
+            "time": 67.27
+        },
+        {
+            "run": 20,
+            "errors": 13,
+            "requests": 14,
+            "time": 311.25
+        },
+        {
+            "run": 21,
+            "errors": 12,
+            "requests": 15,
+            "time": 322.33
+        },
+        {
+            "run": 22,
+            "errors": 0,
+            "requests": 3,
+            "time": 82.89
+        },
+        {
+            "run": 23,
+            "errors": 29,
+            "requests": 5,
+            "time": 86.66
+        },
+        {
+            "run": 24,
+            "errors": 0,
+            "requests": 4,
+            "time": 109.15
+        },
+        {
+            "run": 25,
+            "errors": 0,
+            "requests": 3,
+            "time": 59.01
+        },
+        {
+            "run": 26,
+            "errors": 0,
+            "requests": 3,
+            "time": 76.71
+        },
+        {
+            "run": 27,
+            "errors": 0,
+            "requests": 3,
+            "time": 74.13
+        },
+        {
+            "run": 28,
+            "errors": 0,
+            "requests": 3,
+            "time": 62.05
+        },
+        {
+            "run": 29,
+            "errors": 0,
+            "requests": 3,
+            "time": 69.38
+        },
+        {
+            "run": 30,
+            "errors": 0,
+            "requests": 3,
+            "time": 63.97
+        },
+        {
+            "run": 31,
+            "errors": 0,
+            "requests": 12,
+            "time": 259.93
+        },
+        {
+            "run": 32,
+            "errors": 13,
+            "requests": 19,
+            "time": 365.45
+        },
+        {
+            "run": 33,
+            "errors": 0,
+            "requests": 3,
+            "time": 71.48
+        },
+        {
+            "run": 34,
+            "errors": 0,
+            "requests": 3,
+            "time": 59.18
+        },
+        {
+            "run": 35,
+            "errors": 0,
+            "requests": 3,
+            "time": 76.45
+        },
+        {
+            "run": 36,
+            "errors": 10,
+            "requests": 3,
+            "time": 58.69
+        },
+        {
+            "run": 37,
+            "errors": 13,
+            "requests": 18,
+            "time": 314.53
+        },
+        {
+            "run": 38,
+            "errors": 0,
+            "requests": 11,
+            "time": 214.23
+        },
+        {
+            "run": 39,
+            "errors": 0,
+            "requests": 3,
+            "time": 62.41
+        },
+        {
+            "run": 40,
+            "errors": 16,
+            "requests": 20,
+            "time": 357.43
+        },
+        {
+            "run": 41,
+            "errors": 0,
+            "requests": 11,
+            "time": 294.46
+        },
+        {
+            "run": 42,
+            "errors": 0,
+            "requests": 13,
+            "time": 257.6
+        },
+        {
+            "run": 43,
+            "errors": 12,
+            "requests": 18,
+            "time": 392.13
+        },
+        {
+            "run": 44,
+            "errors": 0,
+            "requests": 3,
+            "time": 76.7
+        },
+        {
+            "run": 45,
+            "errors": 0,
+            "requests": 3,
+            "time": 64.14
+        },
+        {
+            "run": 46,
+            "errors": 0,
+            "requests": 3,
+            "time": 79.26
+        },
+        {
+            "run": 47,
+            "errors": 0,
+            "requests": 3,
+            "time": 85.48
+        },
+        {
+            "run": 48,
+            "errors": 0,
+            "requests": 3,
+            "time": 61.99
+        },
+        {
+            "run": 49,
+            "errors": 0,
+            "requests": 3,
+            "time": 61.31
+        },
+        {
+            "run": 50,
+            "errors": 0,
+            "requests": 3,
+            "time": 71.05
+        }
+    ]
+}
