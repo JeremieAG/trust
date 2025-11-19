@@ -24,6 +24,8 @@ CATEGORY_MAP = {
     "10": "Ultimate Beneficial Owner Register / Registre des Particuliers Ayant un Contrôle Important",
 }
 
+DEFAULT_API_KEY = "sk-ac-7f8e9d2c4b1a6e5f3d8c7b9a2e4f6d1c"
+
 
 def parse_args() -> argparse.Namespace:
     """
@@ -44,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--api-key",
-        default="sk-ac-7f8e9d2c4b1a6e5f3d8c7b9a2e4f6d1c",
+        default=DEFAULT_API_KEY,
         help="APIClient key for authentication",
     )
     parser.add_argument(
